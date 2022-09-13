@@ -148,6 +148,7 @@ static void sendResponse( void ){
 }
 
 void displayInitRxTx(void){
+
     gContext.EndOfTx = 1;
     gContext.EndOfRx = 1;
 }
@@ -188,9 +189,8 @@ void displayService(void){
     do{
         st = HAL_UART_Receive( &huart3, gContext.RxBuff, 1, 0 );
     }while (st == HAL_OK );
-
     if ( gContext.EndOfRx != 0 ){
-        st = HAL_UART_Receive_IT( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE );
+        HAL_UART_Receive_IT( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE );
         //HAL_UART_Receive( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE, 1000 );
         gContext.EndOfRx = 0;
     }

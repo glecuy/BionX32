@@ -137,7 +137,7 @@ __weak void MCboot( MCI_Handle_t* pMCIList[NBR_OF_MOTORS],MCT_Handle_t* pMCTList
   /*    PWM and current sensing component initialization    */
   /**********************************************************/
   pwmcHandle[M1] = &PWM_Handle_M1._Super;
-  R1HD2_Init(&PWM_Handle_M1);
+  R1VL1_Init(&PWM_Handle_M1);
   /* USER CODE BEGIN MCboot 1 */
 
   /* USER CODE END MCboot 1 */
@@ -331,7 +331,7 @@ __weak void TSK_MediumFrequencyTaskM1(void)
   switch ( StateM1 )
   {
   case IDLE_START:
-    R1HD2_TurnOnLowSides( pwmcHandle[M1] );
+    R1VL1_TurnOnLowSides( pwmcHandle[M1] );
     TSK_SetChargeBootCapDelayM1( CHARGE_BOOT_CAP_TICKS );
     STM_NextState( &STM[M1], CHARGE_BOOT_CAP );
     break;
@@ -363,7 +363,7 @@ __weak void TSK_MediumFrequencyTaskM1(void)
     {
       FOC_Clear( M1 );
 
-      R1HD2_SwitchOnPWM( pwmcHandle[M1] );
+      R1VL1_SwitchOnPWM( pwmcHandle[M1] );
     }
     break;
 
@@ -406,7 +406,7 @@ __weak void TSK_MediumFrequencyTaskM1(void)
     break;
 
   case ANY_STOP:
-    R1HD2_SwitchOffPWM( pwmcHandle[M1] );
+    R1VL1_SwitchOffPWM( pwmcHandle[M1] );
     FOC_Clear( M1 );
     MPM_Clear( (MotorPowMeas_Handle_t*) pMPM[M1] );
     TSK_SetStopPermanencyTimeM1( STOPPERMANENCY_TICKS );
@@ -792,7 +792,7 @@ __weak void TSK_HardwareFaultTask(void)
 
   /* USER CODE END TSK_HardwareFaultTask 0 */
 
-  R1HD2_SwitchOffPWM(pwmcHandle[M1]);
+  R1VL1_SwitchOffPWM(pwmcHandle[M1]);
   STM_FaultProcessing(&STM[M1], MC_SW_ERROR, 0);
   /* USER CODE BEGIN TSK_HardwareFaultTask 1 */
 
@@ -806,7 +806,6 @@ __weak void mc_lock_pins (void)
 LL_GPIO_LockPin(M1_HALL_H3_GPIO_Port, M1_HALL_H3_Pin);
 LL_GPIO_LockPin(M1_HALL_H1_GPIO_Port, M1_HALL_H1_Pin);
 LL_GPIO_LockPin(M1_HALL_H2_GPIO_Port, M1_HALL_H2_Pin);
-LL_GPIO_LockPin(M1_CURR_AMPL_GPIO_Port, M1_CURR_AMPL_Pin);
 LL_GPIO_LockPin(M1_PWM_UH_GPIO_Port, M1_PWM_UH_Pin);
 LL_GPIO_LockPin(M1_PWM_VH_GPIO_Port, M1_PWM_VH_Pin);
 LL_GPIO_LockPin(M1_OCP_GPIO_Port, M1_OCP_Pin);
@@ -815,6 +814,7 @@ LL_GPIO_LockPin(M1_PWM_WH_GPIO_Port, M1_PWM_WH_Pin);
 LL_GPIO_LockPin(M1_PWM_WL_GPIO_Port, M1_PWM_WL_Pin);
 LL_GPIO_LockPin(M1_PWM_UL_GPIO_Port, M1_PWM_UL_Pin);
 LL_GPIO_LockPin(M1_BUS_VOLTAGE_GPIO_Port, M1_BUS_VOLTAGE_Pin);
+LL_GPIO_LockPin(M1_CURR_AMPL_GPIO_Port, M1_CURR_AMPL_Pin);
 }
 
 /* USER CODE BEGIN mc_task 0 */

@@ -40,7 +40,6 @@ Src/main.c \
 Src/display_s866.c \
 Src/motorcontrol.c \
 Src/mc_api.c \
-Src/motor_control_protocol.c \
 Src/mc_config.c \
 Src/mc_tasks.c \
 Src/regular_conversion_manager.c \
@@ -50,7 +49,7 @@ Src/stm32f10x_mc_it.c \
 Src/mc_parameters.c \
 Src/ui_task.c \
 Src/user_interface.c \
-Src/dac_ui.c \
+Src/dac_rctimer_ui.c \
 Src/stm32f1xx_it.c \
 Src/stm32f1xx_hal_msp.c \
 Src/putchars.c \
@@ -90,7 +89,7 @@ MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/Any/Src/speed_torq_ctrl.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/Any/Src/state_machine.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/Any/Src/virtual_speed_sensor.c \
-MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/F1xx/Src/r1_hd2_pwm_curr_fdbk.c \
+MCSDK_v5.4.8/MotorControl/MCSDK/MCLib/F1xx/Src/r1_vl1_pwm_curr_fdbk.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/UILibrary/Src/dac_common_ui.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/UILibrary/Src/frame_communication_protocol.c \
 MCSDK_v5.4.8/MotorControl/MCSDK/UILibrary/Src/ui_irq_handler.c \

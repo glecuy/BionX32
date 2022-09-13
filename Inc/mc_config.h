@@ -36,9 +36,9 @@
 #include "usart_frame_communication_protocol.h"
 
 #include "dac_common_ui.h"
-#include "dac_ui.h"
+#include "dac_rctimer_ui.h"
 
-#include "r1_hd2_pwm_curr_fdbk.h"
+#include "r1_vl1_pwm_curr_fdbk.h"
 
 #include "hall_speed_pos_fdbk.h"
 #include "ramp_ext_mngr.h"
@@ -51,7 +51,7 @@ extern PID_Handle_t PIDSpeedHandle_M1;
 extern PID_Handle_t PIDIqHandle_M1;
 extern PID_Handle_t PIDIdHandle_M1;
 extern NTC_Handle_t TempSensorParamsM1;
-extern PWMC_R1_HD2_Handle_t PWM_Handle_M1;
+extern PWMC_R1_VL1_Handle_t PWM_Handle_M1;
 extern SpeednTorqCtrl_Handle_t SpeednTorqCtrlM1;
 extern PQD_MotorPowMeas_Handle_t PQD_MotorPowMeasM1;
 extern PQD_MotorPowMeas_Handle_t *pPQD_MotorPowMeasM1;
@@ -62,8 +62,6 @@ extern RampExtMngr_Handle_t RampExtMngrHFParamsM1;
 extern UI_Handle_t UI_Params;
 
 extern DAC_UI_Handle_t DAC_UI_Params;
-
-extern UFCP_Handle_t pUSART;
 
 /* USER CODE BEGIN Additional extern */
 

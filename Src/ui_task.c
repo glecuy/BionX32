@@ -40,77 +40,75 @@ static volatile uint16_t  bCOMATRTimeCounter = SERIALCOM_ATR_TIME_TICKS;
 void UI_TaskInit( uint32_t* pUICfg, uint8_t bMCNum, MCI_Handle_t* pMCIList[],
                   MCT_Handle_t* pMCTList[],const char* s_fwVer )
 {
-      pDAC = &DAC_UI_Params;
-      pDAC->_Super = UI_Params;
+    pDAC = &DAC_UI_Params;
+    pDAC->_Super = UI_Params;
 
-      UI_Init( &pDAC->_Super, bMCNum, pMCIList, pMCTList, pUICfg ); /* Init UI and link MC obj */
-      UI_DACInit( &pDAC->_Super ); /* Init DAC */
-      UI_SetDAC( &pDAC->_Super, DAC_CH0, MC_PROTOCOL_REG_I_A );
-      UI_SetDAC( &pDAC->_Super, DAC_CH1, MC_PROTOCOL_REG_I_B );
+    UI_Init( &pDAC->_Super, bMCNum, pMCIList, pMCTList, pUICfg ); /* Init UI and link MC obj */
+    UI_DACInit( &pDAC->_Super ); /* Init DAC */
+    UI_SetDAC( &pDAC->_Super, DAC_CH0, MC_PROTOCOL_REG_I_A );
+    UI_SetDAC( &pDAC->_Super, DAC_CH1, MC_PROTOCOL_REG_I_B );
 
     pMCP = &MCP_UI_Params;
     pMCP->_Super = UI_Params;
 
-    UFCP_Init( & pUSART );
-    MCP_Init(pMCP, (FCP_Handle_t *) & pUSART, & UFCP_Send, & UFCP_Receive, & UFCP_AbortReceive, pDAC, s_fwVer);
     UI_Init( &pMCP->_Super, bMCNum, pMCIList, pMCTList, pUICfg ); /* Initialize UI and link MC components */
 
 }
 
 __weak void UI_Scheduler(void)
 {
-  if(bUITaskCounter > 0u)
-  {
-    bUITaskCounter--;
-  }
+    if(bUITaskCounter > 0u)
+    {
+        bUITaskCounter--;
+    }
 
-  if(bCOMTimeoutCounter > 1u)
-  {
-    bCOMTimeoutCounter--;
-  }
+    if(bCOMTimeoutCounter > 1u)
+    {
+        bCOMTimeoutCounter--;
+    }
 
-  if(bCOMATRTimeCounter > 1u)
-  {
-    bCOMATRTimeCounter--;
-  }
+    if(bCOMATRTimeCounter > 1u)
+    {
+        bCOMATRTimeCounter--;
+    }
 }
 
 __weak void UI_DACUpdate(uint8_t bMotorNbr)
 {
-  if (UI_GetSelectedMC(&pDAC->_Super) == bMotorNbr)
-  {
-    UI_DACExec(&pDAC->_Super); /* Exec DAC update */
-  }
+    if (UI_GetSelectedMC(&pDAC->_Super) == bMotorNbr)
+    {
+        UI_DACExec(&pDAC->_Super); /* Exec DAC update */
+    }
 }
 
 __weak void MC_SetDAC(DAC_Channel_t bChannel, MC_Protocol_REG_t bVariable)
 {
-  UI_SetDAC(&pDAC->_Super, bChannel, bVariable);
+    UI_SetDAC(&pDAC->_Super, bChannel, bVariable);
 }
 
 __weak void MC_SetUserDAC(DAC_UserChannel_t bUserChNumber, int16_t hValue)
 {
-  UI_SetUserDAC(&pDAC->_Super, bUserChNumber, hValue);
+    UI_SetUserDAC(&pDAC->_Super, bUserChNumber, hValue);
 }
 
 __weak UI_Handle_t * GetDAC(void)
 {
-  return &pDAC->_Super;
+    return &pDAC->_Super;
 }
 
 __weak MCP_Handle_t * GetMCP(void)
 {
-  return pMCP;
+    return pMCP;
 }
 
 __weak bool UI_IdleTimeHasElapsed(void)
 {
-  bool retVal = false;
-  if (bUITaskCounter == 0u)
-  {
-    retVal = true;
-  }
-  return (retVal);
+    bool retVal = false;
+    if (bUITaskCounter == 0u)
+    {
+        retVal = true;
+    }
+    return (retVal);
 }
 
 /******************* (C) COPYRIGHT 2019 STMicroelectronics *****END OF FILE****/

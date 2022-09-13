@@ -119,20 +119,20 @@ SpeednTorqCtrl_Handle_t SpeednTorqCtrlM1 =
   .TorqueRefDefault =				(int16_t)DEFAULT_TORQUE_COMPONENT,
   .IdrefDefault =					(int16_t)DEFAULT_FLUX_COMPONENT,
 };
-PWMC_R1_HD2_Handle_t PWM_Handle_M1 =
+PWMC_R1_VL1_Handle_t PWM_Handle_M1 =
 {
   {
-    .pFctGetPhaseCurrents              = &R1HD2_GetPhaseCurrents,
-    .pFctSwitchOffPwm                  = &R1HD2_SwitchOffPWM,
-    .pFctSwitchOnPwm                   = &R1HD2_SwitchOnPWM,
-    .pFctCurrReadingCalib              = &R1HD2_CurrentReadingCalibration,
-    .pFctTurnOnLowSides                = &R1HD2_TurnOnLowSides,
-    .pFctSetADCSampPointSectX          = &R1HD2_CalcDutyCycles,
-    .pFctIsOverCurrentOccurred         = &R1HD2_IsOverCurrentOccurred,
+    .pFctGetPhaseCurrents              = &R1VL1_GetPhaseCurrents,
+    .pFctSwitchOffPwm                  = &R1VL1_SwitchOffPWM,
+    .pFctSwitchOnPwm                   = &R1VL1_SwitchOnPWM,
+    .pFctCurrReadingCalib              = &R1VL1_CurrentReadingCalibration,
+    .pFctTurnOnLowSides                = &R1VL1_TurnOnLowSides,
+    .pFctSetADCSampPointSectX          = &R1VL1_CalcDutyCycles,
+    .pFctIsOverCurrentOccurred         = &R1VL1_IsOverCurrentOccurred,
     .pFctOCPSetReferenceVoltage        = MC_NULL,
-    .pFctRLDetectionModeEnable         = MC_NULL,
-    .pFctRLDetectionModeDisable        = MC_NULL,
-    .pFctRLDetectionModeSetDuty        = MC_NULL,
+    .pFctRLDetectionModeEnable         = (PWMC_Generic_Cb_t) 0,
+    .pFctRLDetectionModeDisable        = (PWMC_Generic_Cb_t) 0,
+    .pFctRLDetectionModeSetDuty        = (PWMC_RLDetectSetDuty_Cb_t) 0,
     .hT_Sqrt3 = (PWM_PERIOD_CYCLES*SQRT3FACTOR)/16384u,
     .Sector = 0,
     .CntPhA = 0,
@@ -154,12 +154,11 @@ PWMC_R1_HD2_Handle_t PWM_Handle_M1 =
     .Toff                = TOFF
 
   },
-  .Half_PWMPeriod = PWM_PERIOD_CYCLES/2u,
+  .Half_PWMPeriod = PWM_PERIOD_CYCLES/2u,  /* Half PWM Period in timer clock counts */
   .sampCur1 = 0,
   .sampCur2 = 0,
-  .DMACur = 0,
-
-  .pParams_str = & R1_DDParamsM1
+  .bDMACur = 0,
+  .pParams_str = & R1_VL1ParamsSD
 };
 
 /**
@@ -236,8 +235,8 @@ RDivider_Handle_t RealBusVoltageSensorParamsM1 =
 UI_Handle_t UI_Params =
 {
   .bDriveNum = 0,
-  .pFct_DACInit = &DAC_Init,
-  .pFct_DACExec = &DAC_Exec,
+  .pFct_DACInit = &DACT_Init,
+  .pFct_DACExec = &DACT_Exec,
   .pFctDACSetChannelConfig    = &DAC_SetChannelConfig,
   .pFctDACGetChannelConfig    = &DAC_GetChannelConfig,
   .pFctDACSetUserChannelValue = &DAC_SetUserChannelValue,
@@ -273,7 +272,7 @@ CircleLimitation_Handle_t CircleLimitationM1 =
 UFCP_Handle_t pUSART =
 {
   ._Super.RxTimeout = 0,
-  .USARTx = USART2,
+  .USARTx = USART3,
 
 };
 

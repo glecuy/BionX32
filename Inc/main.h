@@ -64,16 +64,20 @@ void Error_Handler(void);
 #define M1_CURR_AMPL_GPIO_Port GPIOA
 #define M1_BUS_VOLTAGE_Pin GPIO_PIN_1
 #define M1_BUS_VOLTAGE_GPIO_Port GPIOA
-#define UART_TX_Pin GPIO_PIN_2
-#define UART_TX_GPIO_Port GPIOA
-#define UART_RX_Pin GPIO_PIN_3
-#define UART_RX_GPIO_Port GPIOA
-#define DBG_DAC_CH1_Pin GPIO_PIN_4
-#define DBG_DAC_CH1_GPIO_Port GPIOA
-#define DBG_DAC_CH2_Pin GPIO_PIN_5
-#define DBG_DAC_CH2_GPIO_Port GPIOA
+#define M1_HALL_H1_Pin GPIO_PIN_6
+#define M1_HALL_H1_GPIO_Port GPIOA
+#define M1_HALL_H2_Pin GPIO_PIN_7
+#define M1_HALL_H2_GPIO_Port GPIOA
 #define M1_HALL_H3_Pin GPIO_PIN_0
 #define M1_HALL_H3_GPIO_Port GPIOB
+#define UART2_TX_Pin GPIO_PIN_2
+#define UART2_TX_GPIO_Port GPIOA
+#define UART2_RX_Pin GPIO_PIN_3
+#define UART2_RX_GPIO_Port GPIOA
+#define UART3_TX_Pin GPIO_PIN_10
+#define UART3_TX_GPIO_Port GPIOB
+#define UART3_RX_Pin GPIO_PIN_11
+#define UART3_RX_GPIO_Port GPIOB
 #define M1_OCP_Pin GPIO_PIN_12
 #define M1_OCP_GPIO_Port GPIOB
 #define M1_PWM_UL_Pin GPIO_PIN_13
@@ -88,10 +92,10 @@ void Error_Handler(void);
 #define M1_PWM_VH_GPIO_Port GPIOA
 #define M1_PWM_WH_Pin GPIO_PIN_10
 #define M1_PWM_WH_GPIO_Port GPIOA
-#define M1_HALL_H1_Pin GPIO_PIN_4
-#define M1_HALL_H1_GPIO_Port GPIOB
-#define M1_HALL_H2_Pin GPIO_PIN_5
-#define M1_HALL_H2_GPIO_Port GPIOB
+#define DAC_EMUL_CH1_Pin GPIO_PIN_15
+#define DAC_EMUL_CH1_GPIO_Port GPIOA
+#define DAC_EMUL_CH2_Pin GPIO_PIN_3
+#define DAC_EMUL_CH2_GPIO_Port GPIOB
 
 // Non motor gpio definitions
 #define UserLED_Pin GPIO_PIN_13
@@ -102,8 +106,9 @@ void Error_Handler(void);
 #define BusVoltage_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define DEBUG_pin_toggle() HAL_GPIO_TogglePin (UserLED_GPIO_Port, UserLED_Pin)
-
+#define UserLED_toggle() HAL_GPIO_TogglePin (UserLED_GPIO_Port, UserLED_Pin)
+#define UserLED_on() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_SET)
+#define UserLED_off() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_RESET)
 
 
 /* USER CODE END Private defines */

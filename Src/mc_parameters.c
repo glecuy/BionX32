@@ -24,7 +24,7 @@
 #include "main.h"
 #include "parameters_conversion.h"
 
-#include "r1_hd2_pwm_curr_fdbk.h"
+#include "r1_vl1_pwm_curr_fdbk.h"
 
 /* USER CODE BEGIN Additional include */
 
@@ -34,45 +34,37 @@
 #define FREQ_RELATION HIGHEST_FREQ  /* Dummy value for single drive */
 
 /**
-  * @brief  Current sensor parameters Dual Drive Motor 1 - one shunt
+  * @brief  Current sensor parameters Single Drive - one shunt, STM32F100
   */
-
-const R1_DDParams_t R1_DDParamsM1 =
+const R1_VL1Params_t R1_VL1ParamsSD =
 {
 
 /* Instance number -----------------------------------------------------------*/
-  .InstanceNbr             =	1,
 
-  .IsFirstR1DDInstance      =	true,
+  .TIMx                     = TIM1,
 
-  .FreqRatio               =	FREQ_RATIO,
-
-  .IsHigherFreqTim         =	FREQ_RELATION,
-
-  .TIMx                     =	TIM1,
-
-  .TIMx_2                     = TIM5,
+  .TIMx_2                   = TIM4,
 
   /* Current reading A/D Conversions initialization --------------------------*/
-  .ADCx_Inj = ADC3,          /*!< ADC Pperipheral used for phase current sampling */
-  .ADCx_Reg = ADC1,          /*!< ADC Pperipheral used for regular conversion */
-  .IChannel                  =	MC_ADC_CHANNEL_0,
+  .ADCx_Inj = ADC1,
+
+  .hIChannel                  =	MC_ADC_CHANNEL_0,
 
 /* PWM generation parameters --------------------------------------------------*/
-  .DeadTime                  =	DEAD_TIME_COUNTS,
+  .hDeadTime                  =	DEAD_TIME_COUNTS,
 
   .RepetitionCounter         =	REP_COUNTER,
 
-  .Tafter                    =	TAFTER,
+  .hTafter                    =	TAFTER,
 
-  .Tbefore                   =	TBEFORE,
-  .TMin                      =	 TMIN,
+  .hTbefore                   =	TBEFORE,
+  .hTMin                      =	 TMIN,
 
-  .HTMin                     =	HTMIN,
+  .hHTMin                     =	HTMIN,
 
-  .TSample                   =	SAMPLING_TIME,
+  .hTSample                   =	SAMPLING_TIME,
 
-  .MaxTrTs                   =	MAX_TRTS,
+  .hMaxTrTs                   =	MAX_TRTS,
 
 /* PWM Driving signals initialization ----------------------------------------*/
 
@@ -80,7 +72,6 @@ const R1_DDParams_t R1_DDParamsM1 =
 
 /* PWM Driving signals initialization ----------------------------------------*/
   .EmergencyStop                = (FunctionalState) ENABLE,
-
 };
 
 /* USER CODE BEGIN Additional parameters */

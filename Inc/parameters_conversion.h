@@ -132,7 +132,6 @@
 #define PQD_CONVERSION_FACTOR (int32_t)(( 1000 * 3 * ADC_REFERENCE_VOLTAGE ) /\
              ( 1.732 * RSHUNT * AMPLIFICATION_GAIN ))
 
-#define USART_IRQHandler USART2_IRQHandler
 
 /****** Prepares the UI configurations according the MCconfxx settings ********/
 #define COM_ENABLE | OPT_COM
@@ -191,7 +190,7 @@
 21964\
 }
 
-#define SAMPLING_CYCLE_CORRECTION 0.5 /* Add half cycle required by STM32F103RCTx ADC */
+#define SAMPLING_CYCLE_CORRECTION 0.5 /* Add half cycle required by STM32F103RBTx ADC */
 #define LL_ADC_SAMPLINGTIME_1CYCLES_5 LL_ADC_SAMPLINGTIME_1CYCLE_5
 #define LL_ADC_SAMPLING_CYCLE(CYCLE) LL_ADC_SAMPLINGTIME_ ## CYCLE ## CYCLES_5
 

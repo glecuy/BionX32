@@ -28,6 +28,9 @@
 #include "motorcontrol.h"
 /* USER CODE BEGIN Includes */
 
+extern void UserSysTickHandler(void);
+
+
 /* USER CODE END Includes */
 
 /** @addtogroup MCSDK
@@ -51,7 +54,7 @@
 /* USER CODE END PRIVATE */
 
 /* Public prototypes of IRQ handlers called from assembly code ---------------*/
-void ADC3_IRQHandler(void);
+void ADC1_2_IRQHandler(void);
 void TIMx_UP_M1_IRQHandler(void);
 void DMAx_R1_M1_IRQHandler(void);
 void TIMx_BRK_M1_IRQHandler(void);
@@ -63,24 +66,24 @@ void PFC_TIM_IRQHandler(void);
 void EXTI2_IRQHandler (void);
 
 /**
-  * @brief  This function handles ADC3 interrupt request.
+  * @brief  This function handles ADC1/ADC2 interrupt request.
   * @param  None
   * @retval None
   */
-void ADC3_IRQHandler(void)
+void ADC1_2_IRQHandler(void)
 {
- /* USER CODE BEGIN ADC3_IRQn 0 */
+  /* USER CODE BEGIN ADC1_2_IRQn 0 */
 
- /* USER CODE END  ADC3_IRQn 0 */
+  /* USER CODE END ADC1_2_IRQn 0 */
 
-  // Clear Flags
-  LL_ADC_ClearFlag_JEOS( ADC3 );
+  ADC1->SR &= ~(uint32_t)(LL_ADC_FLAG_JEOS | LL_ADC_FLAG_JSTRT);
 
-  /* Highfrequency task ADC3 */
-  UI_DACUpdate(TSK_HighFrequencyTask());
- /* USER CODE BEGIN ADC3_IRQn 1 */
+  UI_DACUpdate(TSK_HighFrequencyTask());  /*GUI, this section is present only if DAC is enabled*/
 
- /* USER CODE END  ADC3_IRQn 1 */
+  /* USER CODE BEGIN ADC1_2_IRQn 1 */
+
+  /* USER CODE END ADC1_2_IRQn 1 */
+
 }
 
 /**
@@ -94,7 +97,7 @@ void TIMx_UP_M1_IRQHandler(void)
 
   /* USER CODE END TIMx_UP_M1_IRQn 0 */
     LL_TIM_ClearFlag_UPDATE(TIM1);
-    R1HD2_TIM1_UP_IRQHandler(&PWM_Handle_M1);
+    R1VL1_TIM1_UP_IRQHandler(&PWM_Handle_M1);
 
    /* USER CODE BEGIN TIMx_UP_M1_IRQn 1 */
 
@@ -116,7 +119,7 @@ void DMAx_R1_M1_IRQHandler(void)
   if (LL_DMA_IsActiveFlag_TC4(DMA1) == SET)
   {
     LL_DMA_ClearFlag_TC4(DMA1);
-    R1HD2_DMA_TC_IRQHandler(&PWM_Handle_M1);
+    R1VL1_DMA_TC_IRQHandler(&PWM_Handle_M1);
     /* USER CODE BEGIN DMAx_R1_M1_TC4 */
 
     /* USER CODE END DMAx_R1_M1_TC4 */
@@ -140,7 +143,7 @@ void TIMx_BRK_M1_IRQHandler(void)
   {
     LL_TIM_ClearFlag_BRK(PWM_Handle_M1.pParams_str->TIMx);
 
-    R1HD2_BRK_IRQHandler(&PWM_Handle_M1);
+    R1VL1_BRK_IRQHandler(&PWM_Handle_M1);
 
   }
   /* Systick is not executed due low priority so is necessary to call MC_Scheduler here.*/
@@ -210,6 +213,7 @@ void HardFault_Handler(void)
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
+#if 0
     {
       if (LL_USART_IsActiveFlag_ORE(pUSART.USARTx)) /* Overrun error occurs */
       {
@@ -226,6 +230,7 @@ void HardFault_Handler(void)
       {
       }
     }
+#endif
   }
  /* USER CODE BEGIN HardFault_IRQn 1 */
 
@@ -255,7 +260,7 @@ static uint8_t SystickDividerCounter = SYSTICK_DIVIDER;
 
   /* USER CODE BEGIN SysTick_IRQn 2 */
   
-	UserSysTickHandler();
+    UserSysTickHandler();
   /* USER CODE END SysTick_IRQn 2 */
 }
 
