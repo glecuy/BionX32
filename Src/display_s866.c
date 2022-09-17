@@ -23,7 +23,7 @@ void UART_printf(const char *fmt, ...);
 #define printf UART_printf
 //#define printf (void)
 
-// Uart3 is used to communicate with display
+// Uart3 is used to communicate with S866 display
 extern UART_HandleTypeDef huart3;
 
 typedef struct
@@ -98,6 +98,15 @@ void displayInit(void) {
 ****************************************************************************/
 static void parseRxFrame(void){
     uint8_t level = gContext.RxBuff[4] & 0xF;
+#if 0
+    uint8_t * ptr = gContext.RxBuff;
+    printf("%02X %02X\r\n", gContext.RxBuff[0], gContext.RxBuff[1] );
+    for (int i=0 ; i<DISPLAY_RX_FRAME_SIZE ; i++ ){
+        printf("%02X ", *ptr++ );
+    }
+    printf("\r\n");
+#endif
+
     if ( gContext.Rx.AssistLevel != level ){
         gContext.Rx.AssistLevel = level;
         printf("AssistLevel = %d\r\n", gContext.Rx.AssistLevel);
@@ -142,7 +151,6 @@ static void sendResponse( void ){
     }
     gContext.TxBuff[13] = checkSum;
 
-    //UART3_TrigSendingBytes( gContext.RxTxBuff, DISPLAY_TX_FRAME_SIZE);
     HAL_UART_Transmit_IT( &huart3, gContext.TxBuff, DISPLAY_TX_FRAME_SIZE);
     gContext.EndOfTx = 0;
 }
@@ -164,7 +172,7 @@ void displayEndOfTx(void){
 int serviceCNT=0;
 void displayService(void){
 
-    printf("displayService(%d/%d)\r\n", gContext.EndOfTx, gContext.EndOfRx);
+    printf("displayService(%d/%d) %u\r\n", gContext.EndOfTx, gContext.EndOfRx, HAL_UART_GetState(&huart3) );
     if ( gContext.EndOfRx ){
         uint8_t checkSum = 0x0;
         // Compute checkSum
@@ -180,21 +188,22 @@ void displayService(void){
             printf("sendResponse done\r\n");
         }
         else{
-            printf("checkSum error: %X/%X\n", checkSum, gContext.RxBuff[DISPLAY_RX_FRAME_SIZE-1]);
+            printf("checkSum error: %X/%X\r\n", checkSum, gContext.RxBuff[DISPLAY_RX_FRAME_SIZE-1]);
         }
     }
 
     // TODO:  Improve sync
     HAL_StatusTypeDef st;
     do{
+        UserProbe6_H();
         st = HAL_UART_Receive( &huart3, gContext.RxBuff, 1, 0 );
+        UserProbe6_L();
     }while (st == HAL_OK );
     if ( gContext.EndOfRx != 0 ){
         HAL_UART_Receive_IT( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE );
         //HAL_UART_Receive( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE, 1000 );
         gContext.EndOfRx = 0;
     }
-
 }
 
 uint8_t displaySetWheelTime( uint16_t tMs ){

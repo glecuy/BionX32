@@ -110,6 +110,18 @@ void Error_Handler(void);
 #define UserLED_on() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_SET)
 #define UserLED_off() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_RESET)
 
+// Probes
+#define UserProbe5_Pin  GPIO_PIN_5
+#define UserProbe6_Pin  GPIO_PIN_6
+#define UserProbes_Port GPIOB
+
+#define UserProbe5_toggle() HAL_GPIO_TogglePin (UserProbes_Port, UserProbe5_Pin)
+#define UserProbe6_toggle() HAL_GPIO_TogglePin (UserProbes_Port, UserProbe6_Pin)
+#define UserProbe5_H() HAL_GPIO_WritePin (UserProbes_Port, UserProbe5_Pin, GPIO_PIN_SET)
+#define UserProbe5_L() HAL_GPIO_WritePin (UserProbes_Port, UserProbe5_Pin, GPIO_PIN_RESET)
+#define UserProbe6_H() HAL_GPIO_WritePin (UserProbes_Port, UserProbe6_Pin, GPIO_PIN_SET)
+#define UserProbe6_L() HAL_GPIO_WritePin (UserProbes_Port, UserProbe6_Pin, GPIO_PIN_RESET)
+
 
 /* USER CODE END Private defines */
 

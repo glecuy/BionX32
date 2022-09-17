@@ -129,7 +129,7 @@ int main(void)
     MX_USART3_UART_Init();
     MX_USART2_UART_Init();
 
-    //MX_MotorControl_Init(); TODO Break UART3 TX !
+    //MX_MotorControl_Init(); // TODO it breaks UART3 TX !
 
     /* Initialize interrupts */
     MX_NVIC_Init();
@@ -699,6 +699,13 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    // Probe #1
+    GPIO_InitStruct.Pin = UserProbe5_Pin|UserProbe6_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(UserProbes_Port, &GPIO_InitStruct);
 
 }
 
