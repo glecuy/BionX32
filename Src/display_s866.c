@@ -74,7 +74,7 @@ typedef struct
     RX_PARAM_t      Rx;
     TX_PARAM_t      Tx;
 
-    uint8_t EndOfRx;
+    int RxIndex;
     uint8_t EndOfTx;
 
 }DISPLAY_CONTEXT_t;
@@ -128,7 +128,7 @@ static void parseRxFrame(void){
  *     02 0E 01 00 80 00 00 02 01 61 00 00 FF 10 22 Kmh
  *     02 0E 01 00 80 00 00 0C 01 83 01 00 FF FC 22 Kmh 2Amp
  **************************************************************/
-static void sendResponse( void ){
+static void sendStatus( void ){
     uint8_t checkSum = 0x0;
 
     gContext.TxBuff[0]  = 0x02;
@@ -158,55 +158,69 @@ static void sendResponse( void ){
 void displayInitRxTx(void){
 
     gContext.EndOfTx = 1;
-    gContext.EndOfRx = 1;
+    gContext.RxIndex = 0;
 }
 
 void displayEndOfRx(){
-    gContext.EndOfRx = 1;
+    //UserProbe6_toggle();
+
+    if ( gContext.RxBuff[0] != 0x01 ){
+        gContext.RxIndex = 0;
+    }
+    else if ( ( gContext.RxIndex > 0 )
+           && ( gContext.RxBuff[1] != 0x14 ) ){
+        gContext.RxIndex = 0;
+    }
+    else{
+        gContext.RxIndex++;
+    }
+    // Test End of frame ?
+    if ( gContext.RxIndex < DISPLAY_RX_FRAME_SIZE ){
+        // Continue receiving
+        HAL_UART_Receive_IT( &huart3, gContext.RxBuff+gContext.RxIndex, 1 );
+    }
+    else{
+        HAL_UART_Receive_IT( &huart3, gContext.RxBuff+0, 1 );
+    }
 }
 
 void displayEndOfTx(void){
     gContext.EndOfTx = 1;
 }
 
-int serviceCNT=0;
 void displayService(void){
+    // Send some data from controller to display
+    sendStatus();
 
-    printf("displayService(%d/%d) %u\r\n", gContext.EndOfTx, gContext.EndOfRx, HAL_UART_GetState(&huart3) );
-    if ( gContext.EndOfRx ){
-        uint8_t checkSum = 0x0;
+    if ( gContext.RxIndex >= DISPLAY_RX_FRAME_SIZE ){
+        // RxBuff[0] may be overwritten, RxBuff[0:1] already checked
+        uint8_t checkSum = 0x01 ^ 0x14;
         // Compute checkSum
-        for (int i=0 ; i<(DISPLAY_RX_FRAME_SIZE-1); i++ ){
+        for (int i=2 ; i<(DISPLAY_RX_FRAME_SIZE-1); i++ ){
             checkSum ^= (uint8_t)(gContext.RxBuff[i]);
         }
 
         if ( checkSum == gContext.RxBuff[DISPLAY_RX_FRAME_SIZE-1] ){
             // Parse data frame
             parseRxFrame();
-            // Send some data from controller to display
-            sendResponse();
-            printf("sendResponse done\r\n");
         }
         else{
             printf("checkSum error: %X/%X\r\n", checkSum, gContext.RxBuff[DISPLAY_RX_FRAME_SIZE-1]);
         }
+        gContext.RxIndex = 0;
     }
 
-    // TODO:  Improve sync
-    HAL_StatusTypeDef st;
-    do{
-        UserProbe6_H();
-        st = HAL_UART_Receive( &huart3, gContext.RxBuff, 1, 0 );
-        UserProbe6_L();
-    }while (st == HAL_OK );
-    if ( gContext.EndOfRx != 0 ){
-        HAL_UART_Receive_IT( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE );
-        //HAL_UART_Receive( &huart3, gContext.RxBuff, DISPLAY_RX_FRAME_SIZE, 1000 );
-        gContext.EndOfRx = 0;
+    if ( gContext.RxIndex == 0 ){
+        HAL_UART_Receive_IT( &huart3, gContext.RxBuff, 1 );
     }
 }
 
+
+
 uint8_t displaySetWheelTime( uint16_t tMs ){
+    // Clamp speed (~ 72 KmH)
+    if ( tMs < 70 )
+        tMs = 70;
     gContext.Tx.Wheeltime = tMs;
     return 0;
 }

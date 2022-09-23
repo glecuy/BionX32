@@ -85,7 +85,7 @@ static void MX_NVIC_Init(void);
 volatile uint32_t systick_cnt = 0;
 
 
-// every 1ms
+// Changed to 500us in motorcontrol.c
 void UserSysTickHandler(void) {
     systick_cnt++;
 
@@ -126,10 +126,10 @@ int main(void)
     MX_TIM2_Init();
     MX_TIM3_Init();
     MX_TIM4_Init();
-    MX_USART3_UART_Init();
     MX_USART2_UART_Init();
+    MX_USART3_UART_Init();
 
-    //MX_MotorControl_Init(); // TODO it breaks UART3 TX !
+    MX_MotorControl_Init();
 
     /* Initialize interrupts */
     MX_NVIC_Init();
@@ -148,7 +148,7 @@ int main(void)
     {
         /* USER CODE END WHILE */
 
-        uint32_t ms =  systick_cnt;
+        uint32_t ms =  systick_cnt/2;
         if ( ms >   next_systick_cnt ){
             next_systick_cnt = ms + 300;
 
@@ -700,7 +700,7 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    // Probe #1
+    // Probe #5 #6
     GPIO_InitStruct.Pin = UserProbe5_Pin|UserProbe6_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
