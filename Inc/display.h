@@ -28,6 +28,8 @@ void displayEndOfTx(void);
 void displayEndOfRx(void);
 void displayInitRxTx(void);
 
+uint8_t displayGetAssistLevel(void);
+
 
 #endif // DISPLAY_H
 

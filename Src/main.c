@@ -26,6 +26,7 @@ volatile uint8_t uart2TxDone;
 /* USER CODE BEGIN Includes */
 
 #include "display.h"
+#include "ebikecontrol.h"
 
 /* USER CODE END Includes */
 
@@ -144,16 +145,23 @@ int main(void)
 
     uint32_t next_systick_cnt = 0;
 
+    motorServiceInit();
+
     while (1)
     {
         /* USER CODE END WHILE */
 
         uint32_t ms =  systick_cnt/2;
         if ( ms >   next_systick_cnt ){
-            next_systick_cnt = ms + 300;
+            // Rx frame period is 155 ms
+            // Polling should be smaller to avoid rx sync loss
+            next_systick_cnt = ms + 100;
 
             // Display console In/Out
             displayService();
+
+            // High level Motor control
+            motorService();
 
             UserLED_toggle();
         }

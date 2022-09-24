@@ -38,7 +38,9 @@ BUILD_DIR = build
 C_SOURCES =  \
 Src/main.c \
 Src/display_s866.c \
+Src/ebikecontrol.c \
 Src/motorcontrol.c \
+Src/user_interface.c \
 Src/mc_api.c \
 Src/mc_config.c \
 Src/mc_tasks.c \
@@ -48,7 +50,6 @@ Src/mc_interface.c \
 Src/stm32f10x_mc_it.c \
 Src/mc_parameters.c \
 Src/ui_task.c \
-Src/user_interface.c \
 Src/dac_rctimer_ui.c \
 Src/stm32f1xx_it.c \
 Src/stm32f1xx_hal_msp.c \

@@ -74,7 +74,7 @@ typedef struct
     RX_PARAM_t      Rx;
     TX_PARAM_t      Tx;
 
-    int RxIndex;
+    uint32_t RxIndex;
     uint8_t EndOfTx;
 
 }DISPLAY_CONTEXT_t;
@@ -157,12 +157,17 @@ static void sendStatus( void ){
 
 void displayInitRxTx(void){
 
-    gContext.EndOfTx = 1;
+    gContext.EndOfTx = 0;
     gContext.RxIndex = 0;
 }
 
 void displayEndOfRx(){
-    //UserProbe6_toggle();
+    UserProbe6_toggle();
+
+    if ( gContext.RxIndex > 0)
+        UserProbe5_H();
+    else
+        UserProbe5_L();
 
     if ( gContext.RxBuff[0] != 0x01 ){
         gContext.RxIndex = 0;
@@ -171,17 +176,14 @@ void displayEndOfRx(){
            && ( gContext.RxBuff[1] != 0x14 ) ){
         gContext.RxIndex = 0;
     }
-    else{
-        gContext.RxIndex++;
-    }
-    // Test End of frame ?
-    if ( gContext.RxIndex < DISPLAY_RX_FRAME_SIZE ){
+    else if ( gContext.RxIndex < DISPLAY_RX_FRAME_SIZE ){
         // Continue receiving
+        gContext.RxIndex++;
         HAL_UART_Receive_IT( &huart3, gContext.RxBuff+gContext.RxIndex, 1 );
+        return;
     }
-    else{
-        HAL_UART_Receive_IT( &huart3, gContext.RxBuff+0, 1 );
-    }
+
+    HAL_UART_Receive_IT( &huart3, gContext.RxBuff+0, 1 );
 }
 
 void displayEndOfTx(void){
@@ -192,7 +194,15 @@ void displayService(void){
     // Send some data from controller to display
     sendStatus();
 
+    //printf("gContext.RxIndex = %u\r\n", gContext.RxIndex );
+
+    if ( gContext.RxIndex > 0)
+        UserProbe5_H();
+    else
+        UserProbe5_L();
+
     if ( gContext.RxIndex >= DISPLAY_RX_FRAME_SIZE ){
+        UserProbe5_H();
         // RxBuff[0] may be overwritten, RxBuff[0:1] already checked
         uint8_t checkSum = 0x01 ^ 0x14;
         // Compute checkSum
@@ -213,6 +223,16 @@ void displayService(void){
     if ( gContext.RxIndex == 0 ){
         HAL_UART_Receive_IT( &huart3, gContext.RxBuff, 1 );
     }
+
+    if ( gContext.RxIndex > 0)
+        UserProbe5_H();
+    else
+        UserProbe5_L();
+}
+
+
+uint8_t displayGetAssistLevel(void){
+    return gContext.Rx.AssistLevel;
 }
 
 
