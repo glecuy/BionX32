@@ -162,7 +162,7 @@ void displayInitRxTx(void){
 }
 
 void displayEndOfRx(){
-    UserProbe6_toggle();
+//    UserProbe6_toggle();
 
     if ( gContext.RxIndex > 0)
         UserProbe5_H();

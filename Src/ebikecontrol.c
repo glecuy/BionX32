@@ -21,6 +21,7 @@ void UART_printf(const char *fmt, ...);
 //#define printf (void)
 
 extern MCI_Handle_t * pMCI[NBR_OF_MOTORS];
+extern MCT_Handle_t * pMCT[NBR_OF_MOTORS];
 
 uint8_t MC_AssistLevel = 0xFF;
 
@@ -40,6 +41,7 @@ void motorServiceInit(void){
 
 void motorService(void){
     uint8_t AssistLevel = displayGetAssistLevel();
+    uint16_t voltage;
 
 
     if ( MC_AssistLevel != AssistLevel ){
@@ -53,7 +55,11 @@ void motorService(void){
         MC_AssistLevel = AssistLevel;
     }
 
-    displayMotorState();
+    voltage = VBS_GetAvBusVoltage_V(pMCT[M1]->pBusVoltageSensor);
+    printf("Motor voltage = %d\r\n", voltage );
+
+
+    //displayMotorState();
 }
 
 

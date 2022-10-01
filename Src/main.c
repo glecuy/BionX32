@@ -278,7 +278,7 @@ static void MX_ADC1_Init(void)
     hadc1.Init.DiscontinuousConvMode = DISABLE;
     hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
     hadc1.Init.DataAlign = ADC_DATAALIGN_LEFT;
-    hadc1.Init.NbrOfConversion = 1;
+    hadc1.Init.NbrOfConversion = 2;
     if (HAL_ADC_Init(&hadc1) != HAL_OK)
     {
         Error_Handler();
@@ -315,6 +315,16 @@ static void MX_ADC1_Init(void)
     {
         Error_Handler();
     }
+
+  /** Configure Regular Channel (Temperature)
+  */
+  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
     /* USER CODE BEGIN ADC1_Init 2 */
 
     /* USER CODE END ADC1_Init 2 */
@@ -702,13 +712,7 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(UserLED_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : BusCurrent_Pin BusVoltage_Pin */
-    GPIO_InitStruct.Pin = BusCurrent_Pin|BusVoltage_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    // Probe #5 #6
+    /* Probe #5 #6  */
     GPIO_InitStruct.Pin = UserProbe5_Pin|UserProbe6_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;

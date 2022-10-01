@@ -378,7 +378,7 @@ __weak void TSK_MediumFrequencyTaskM1(void)
       /* USER CODE BEGIN MediumFrequencyTask M1 1 */
 
       /* USER CODE END MediumFrequencyTask M1 1 */
-	  FOC_InitAdditionalMethods(M1);
+      FOC_InitAdditionalMethods(M1);
       FOC_CalcCurrRef( M1 );
       STM_NextState( &STM[M1], RUN );
     }
@@ -730,7 +730,7 @@ __weak void TSK_SafetyTask_PWMOFF(uint8_t bMotor)
     break;
   case FAULT_OVER:
     PWMC_SwitchOffPWM(pwmcHandle[bMotor]);
-	/* USER CODE BEGIN TSK_SafetyTask_PWMOFF 2 */
+    /* USER CODE BEGIN TSK_SafetyTask_PWMOFF 2 */
 
     /* USER CODE END TSK_SafetyTask_PWMOFF 2 */
     break;
@@ -815,6 +815,7 @@ LL_GPIO_LockPin(M1_PWM_WL_GPIO_Port, M1_PWM_WL_Pin);
 LL_GPIO_LockPin(M1_PWM_UL_GPIO_Port, M1_PWM_UL_Pin);
 LL_GPIO_LockPin(M1_BUS_VOLTAGE_GPIO_Port, M1_BUS_VOLTAGE_Pin);
 LL_GPIO_LockPin(M1_CURR_AMPL_GPIO_Port, M1_CURR_AMPL_Pin);
+LL_GPIO_LockPin(M1_TEMPERATURE_GPIO_Port, M1_TEMPERATURE_Pin);
 }
 
 /* USER CODE BEGIN mc_task 0 */

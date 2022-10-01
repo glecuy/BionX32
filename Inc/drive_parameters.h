@@ -141,6 +141,8 @@
 #define TRANSITION_DURATION            25  /* Switch over duration, ms */
 /******************************   BUS VOLTAGE Motor 1  **********************/
 #define  M1_VBUS_SAMPLING_TIME  LL_ADC_SAMPLING_CYCLE(1)
+/******************************   Temperature sensing Motor 1  **********************/
+#define  M1_TEMP_SAMPLING_TIME  LL_ADC_SAMPLING_CYCLE(1)
 /******************************   Current sensing Motor 1   **********************/
 #define ADC_SAMPLING_CYCLES (1 + SAMPLING_CYCLE_CORRECTION)
 

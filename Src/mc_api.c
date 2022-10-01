@@ -68,7 +68,7 @@ extern MCI_Handle_t * pMCI[NBR_OF_MOTORS];
   */
 __weak bool MC_StartMotor1(void)
 {
-	return MCI_StartMotor( pMCI[M1] );
+    return MCI_StartMotor( pMCI[M1] );
 }
 
 /**
@@ -88,7 +88,7 @@ __weak bool MC_StartMotor1(void)
   */
 __weak bool MC_StopMotor1(void)
 {
-	return MCI_StopMotor( pMCI[M1] );
+    return MCI_StopMotor( pMCI[M1] );
 }
 
 /**
@@ -124,7 +124,7 @@ __weak bool MC_StopMotor1(void)
   */
 __weak void MC_ProgramSpeedRampMotor1( int16_t hFinalSpeed, uint16_t hDurationms )
 {
-	MCI_ExecSpeedRamp( pMCI[M1], hFinalSpeed, hDurationms );
+    MCI_ExecSpeedRamp( pMCI[M1], hFinalSpeed, hDurationms );
 }
 
 /**
@@ -160,7 +160,7 @@ __weak void MC_ProgramSpeedRampMotor1( int16_t hFinalSpeed, uint16_t hDurationms
   */
 __weak void MC_ProgramTorqueRampMotor1( int16_t hFinalTorque, uint16_t hDurationms )
 {
-	MCI_ExecTorqueRamp( pMCI[M1], hFinalTorque, hDurationms );
+    MCI_ExecTorqueRamp( pMCI[M1], hFinalTorque, hDurationms );
 }
 
 /**
@@ -185,7 +185,7 @@ __weak void MC_ProgramTorqueRampMotor1( int16_t hFinalTorque, uint16_t hDuration
   */
 __weak void MC_SetCurrentReferenceMotor1( qd_t Iqdref )
 {
-	MCI_SetCurrentReferences( pMCI[M1], Iqdref );
+    MCI_SetCurrentReferences( pMCI[M1], Iqdref );
 }
 
 /**
@@ -201,7 +201,7 @@ __weak void MC_SetCurrentReferenceMotor1( qd_t Iqdref )
   */
 __weak MCI_CommandState_t  MC_GetCommandStateMotor1( void)
 {
-	return MCI_IsCommandAcknowledged( pMCI[M1] );
+    return MCI_IsCommandAcknowledged( pMCI[M1] );
 }
 
 /**
@@ -216,7 +216,7 @@ __weak MCI_CommandState_t  MC_GetCommandStateMotor1( void)
  */
 __weak bool MC_StopSpeedRampMotor1(void)
 {
-	return MCI_StopSpeedRamp( pMCI[M1] );
+    return MCI_StopSpeedRamp( pMCI[M1] );
 }
 
 /**
@@ -235,7 +235,7 @@ __weak void MC_StopRampMotor1(void)
  */
 __weak bool MC_HasRampCompletedMotor1(void)
 {
-	return MCI_RampCompleted( pMCI[M1] );
+    return MCI_RampCompleted( pMCI[M1] );
 }
 
 /**
@@ -243,7 +243,7 @@ __weak bool MC_HasRampCompletedMotor1(void)
  */
 __weak int16_t MC_GetMecSpeedReferenceMotor1(void)
 {
-	return MCI_GetMecSpeedRefUnit( pMCI[M1] );
+    return MCI_GetMecSpeedRefUnit( pMCI[M1] );
 }
 
 /**
@@ -251,7 +251,7 @@ __weak int16_t MC_GetMecSpeedReferenceMotor1(void)
  */
 __weak int16_t MC_GetMecSpeedAverageMotor1(void)
 {
-	return MCI_GetAvrgMecSpeedUnit( pMCI[M1] );
+    return MCI_GetAvrgMecSpeedUnit( pMCI[M1] );
 }
 
 /**
@@ -259,7 +259,7 @@ __weak int16_t MC_GetMecSpeedAverageMotor1(void)
  */
 __weak int16_t MC_GetLastRampFinalSpeedMotor1(void)
 {
-	return MCI_GetLastRampFinalSpeed( pMCI[M1] );
+    return MCI_GetLastRampFinalSpeed( pMCI[M1] );
 }
 
 /**
@@ -267,7 +267,7 @@ __weak int16_t MC_GetLastRampFinalSpeedMotor1(void)
  */
 __weak STC_Modality_t MC_GetControlModeMotor1(void)
 {
-	return MCI_GetControlMode( pMCI[M1] );
+    return MCI_GetControlMode( pMCI[M1] );
 }
 
 /**
@@ -283,7 +283,7 @@ __weak STC_Modality_t MC_GetControlModeMotor1(void)
  */
 __weak int16_t MC_GetImposedDirectionMotor1(void)
 {
-	return MCI_GetImposedMotorDirection( pMCI[M1] );
+    return MCI_GetImposedMotorDirection( pMCI[M1] );
 }
 
 /**
@@ -291,7 +291,7 @@ __weak int16_t MC_GetImposedDirectionMotor1(void)
  */
 __weak bool MC_GetSpeedSensorReliabilityMotor1(void)
 {
-	return MCI_GetSpdSensorReliability( pMCI[M1] );
+    return MCI_GetSpdSensorReliability( pMCI[M1] );
 }
 
 /**
@@ -306,7 +306,7 @@ __weak bool MC_GetSpeedSensorReliabilityMotor1(void)
  */
 __weak int16_t MC_GetPhaseCurrentAmplitudeMotor1(void)
 {
-	return MCI_GetPhaseCurrentAmplitude( pMCI[M1] );
+    return MCI_GetPhaseCurrentAmplitude( pMCI[M1] );
 }
 
 /**
@@ -321,7 +321,7 @@ __weak int16_t MC_GetPhaseCurrentAmplitudeMotor1(void)
  */
 __weak int16_t MC_GetPhaseVoltageAmplitudeMotor1(void)
 {
-	return MCI_GetPhaseVoltageAmplitude( pMCI[M1] );
+    return MCI_GetPhaseVoltageAmplitude( pMCI[M1] );
 }
 
 /**
@@ -329,7 +329,7 @@ __weak int16_t MC_GetPhaseVoltageAmplitudeMotor1(void)
  */
 __weak ab_t MC_GetIabMotor1(void)
 {
-	return MCI_GetIab( pMCI[M1] );
+    return MCI_GetIab( pMCI[M1] );
 }
 
 /**
@@ -337,7 +337,7 @@ __weak ab_t MC_GetIabMotor1(void)
  */
 __weak alphabeta_t MC_GetIalphabetaMotor1(void)
 {
-	return MCI_GetIalphabeta( pMCI[M1] );
+    return MCI_GetIalphabeta( pMCI[M1] );
 }
 
 /**
@@ -345,7 +345,7 @@ __weak alphabeta_t MC_GetIalphabetaMotor1(void)
  */
 __weak qd_t MC_GetIqdMotor1(void)
 {
-	return MCI_GetIqd( pMCI[M1] );
+    return MCI_GetIqd( pMCI[M1] );
 }
 
 /**
@@ -353,7 +353,7 @@ __weak qd_t MC_GetIqdMotor1(void)
  */
 __weak qd_t MC_GetIqdrefMotor1(void)
 {
-	return MCI_GetIqdref( pMCI[M1] );
+    return MCI_GetIqdref( pMCI[M1] );
 }
 
 /**
@@ -361,7 +361,7 @@ __weak qd_t MC_GetIqdrefMotor1(void)
  */
 __weak qd_t MC_GetVqdMotor1(void)
 {
-	return MCI_GetVqd( pMCI[M1] );
+    return MCI_GetVqd( pMCI[M1] );
 }
 
 /**
@@ -369,7 +369,7 @@ __weak qd_t MC_GetVqdMotor1(void)
  */
 __weak alphabeta_t MC_GetValphabetaMotor1(void)
 {
-	return MCI_GetValphabeta( pMCI[M1] );
+    return MCI_GetValphabeta( pMCI[M1] );
 }
 
 /**
@@ -377,7 +377,7 @@ __weak alphabeta_t MC_GetValphabetaMotor1(void)
  */
 __weak int16_t MC_GetElAngledppMotor1(void)
 {
-	return MCI_GetElAngledpp( pMCI[M1] );
+    return MCI_GetElAngledpp( pMCI[M1] );
 }
 
 /**
@@ -385,7 +385,7 @@ __weak int16_t MC_GetElAngledppMotor1(void)
  */
 __weak int16_t MC_GetTerefMotor1(void)
 {
-	return MCI_GetTeref( pMCI[M1] );
+    return MCI_GetTeref( pMCI[M1] );
 }
 
 /**
@@ -399,7 +399,7 @@ __weak int16_t MC_GetTerefMotor1(void)
  */
 __weak void MC_SetIdrefMotor1( int16_t hNewIdref )
 {
-	MCI_SetIdref( pMCI[M1], hNewIdref );
+    MCI_SetIdref( pMCI[M1], hNewIdref );
 }
 
 /**
@@ -412,7 +412,7 @@ __weak void MC_SetIdrefMotor1( int16_t hNewIdref )
  */
 __weak void MC_Clear_IqdrefMotor1(void)
 {
-	MCI_Clear_Iqdref( pMCI[M1] );
+    MCI_Clear_Iqdref( pMCI[M1] );
 }
 
 /**
@@ -425,7 +425,7 @@ __weak void MC_Clear_IqdrefMotor1(void)
  */
 __weak bool MC_AcknowledgeFaultMotor1( void )
 {
-	return MCI_FaultAcknowledged( pMCI[M1] );
+    return MCI_FaultAcknowledged( pMCI[M1] );
 }
 
 /**
@@ -439,7 +439,7 @@ __weak bool MC_AcknowledgeFaultMotor1( void )
  */
 __weak uint16_t MC_GetOccurredFaultsMotor1(void)
 {
-	return MCI_GetOccurredFaults( pMCI[M1] );
+    return MCI_GetOccurredFaults( pMCI[M1] );
 }
 
 /**
@@ -453,7 +453,7 @@ __weak uint16_t MC_GetOccurredFaultsMotor1(void)
  */
 __weak uint16_t MC_GetCurrentFaultsMotor1(void)
 {
-	return MCI_GetCurrentFaults( pMCI[M1] );
+    return MCI_GetCurrentFaults( pMCI[M1] );
 }
 
 /**
@@ -461,6 +461,6 @@ __weak uint16_t MC_GetCurrentFaultsMotor1(void)
  */
 __weak State_t  MC_GetSTMStateMotor1(void)
 {
-	return MCI_GetSTMState( pMCI[M1] );
+    return MCI_GetSTMState( pMCI[M1] );
 }
 

@@ -42,7 +42,7 @@
   */
 
 /**
-  * @brief  It initializes bus voltage conversion (ADC, ADC channel, conversion time. 
+  * @brief  It initializes bus voltage conversion (ADC, ADC channel, conversion time.
     It must be called only after PWMC_Init.
   * @param  pHandle related RDivider_Handle_t
   * @retval none

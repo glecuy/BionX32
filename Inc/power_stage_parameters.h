@@ -35,7 +35,7 @@
                                                          are not used */
 
 /*********** Bus voltage sensing section ****************/
-#define VBUS_PARTITIONING_FACTOR      0.0080 /*!< It expresses how
+#define VBUS_PARTITIONING_FACTOR      0.0901 /*!< It expresses how
                                                        much the Vbus is attenuated
                                                        before being converted into
                                                        digital value */
@@ -44,11 +44,11 @@
 /*** Topology ***/
 #define SINGLE_SHUNT
 
-#define RSHUNT                        0.03000
+#define RSHUNT                        0.02000
 
 /*  ICSs gains in case of isolated current sensors,
         amplification gain for shunts based sensing */
-#define AMPLIFICATION_GAIN            3.45
+#define AMPLIFICATION_GAIN            6.21
 
 /*** Noise parameters ***/
 #define TNOISE_NS                     2550

@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define M1_CURR_AMPL_GPIO_Port GPIOA
 #define M1_BUS_VOLTAGE_Pin GPIO_PIN_1
 #define M1_BUS_VOLTAGE_GPIO_Port GPIOA
+#define M1_TEMPERATURE_Pin GPIO_PIN_4
+#define M1_TEMPERATURE_GPIO_Port GPIOA
 #define M1_HALL_H1_Pin GPIO_PIN_6
 #define M1_HALL_H1_GPIO_Port GPIOA
 #define M1_HALL_H2_Pin GPIO_PIN_7
@@ -100,10 +102,6 @@ void Error_Handler(void);
 // Non motor gpio definitions
 #define UserLED_Pin GPIO_PIN_13
 #define UserLED_GPIO_Port GPIOC
-#define BusCurrent_Pin GPIO_PIN_0
-#define BusCurrent_GPIO_Port GPIOA
-#define BusVoltage_Pin GPIO_PIN_1
-#define BusVoltage_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 #define UserLED_toggle() HAL_GPIO_TogglePin (UserLED_GPIO_Port, UserLED_Pin)

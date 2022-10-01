@@ -107,17 +107,17 @@ PID_Handle_t PIDIdHandle_M1 =
   */
 SpeednTorqCtrl_Handle_t SpeednTorqCtrlM1 =
 {
-  .STCFrequencyHz =           		MEDIUM_FREQUENCY_TASK_RATE,
-  .MaxAppPositiveMecSpeedUnit =	(uint16_t)(MAX_APPLICATION_SPEED_UNIT),
-  .MinAppPositiveMecSpeedUnit =	(uint16_t)(MIN_APPLICATION_SPEED_UNIT),
-  .MaxAppNegativeMecSpeedUnit =	(int16_t)(-MIN_APPLICATION_SPEED_UNIT),
-  .MinAppNegativeMecSpeedUnit =	(int16_t)(-MAX_APPLICATION_SPEED_UNIT),
-  .MaxPositiveTorque =				(int16_t)NOMINAL_CURRENT,
-  .MinNegativeTorque =				-(int16_t)NOMINAL_CURRENT,
-  .ModeDefault =					DEFAULT_CONTROL_MODE,
-  .MecSpeedRefUnitDefault =		(int16_t)(DEFAULT_TARGET_SPEED_UNIT),
-  .TorqueRefDefault =				(int16_t)DEFAULT_TORQUE_COMPONENT,
-  .IdrefDefault =					(int16_t)DEFAULT_FLUX_COMPONENT,
+  .STCFrequencyHz =                 MEDIUM_FREQUENCY_TASK_RATE,
+  .MaxAppPositiveMecSpeedUnit = (uint16_t)(MAX_APPLICATION_SPEED_UNIT),
+  .MinAppPositiveMecSpeedUnit = (uint16_t)(MIN_APPLICATION_SPEED_UNIT),
+  .MaxAppNegativeMecSpeedUnit = (int16_t)(-MIN_APPLICATION_SPEED_UNIT),
+  .MinAppNegativeMecSpeedUnit = (int16_t)(-MAX_APPLICATION_SPEED_UNIT),
+  .MaxPositiveTorque =              (int16_t)NOMINAL_CURRENT,
+  .MinNegativeTorque =              -(int16_t)NOMINAL_CURRENT,
+  .ModeDefault =                    DEFAULT_CONTROL_MODE,
+  .MecSpeedRefUnitDefault =     (int16_t)(DEFAULT_TARGET_SPEED_UNIT),
+  .TorqueRefDefault =               (int16_t)DEFAULT_TORQUE_COMPONENT,
+  .IdrefDefault =                   (int16_t)DEFAULT_FLUX_COMPONENT,
 };
 PWMC_R1_VL1_Handle_t PWM_Handle_M1 =
 {
@@ -168,12 +168,12 @@ PWMC_R1_VL1_Handle_t PWM_Handle_M1 =
 HALL_Handle_t HALL_M1 =
 {
   ._Super = {
-    .bElToMecRatio                     =	POLE_PAIR_NUM,
-    .hMaxReliableMecSpeedUnit          =	(uint16_t)(1.15*MAX_APPLICATION_SPEED_UNIT),
-    .hMinReliableMecSpeedUnit          =	(uint16_t)(MIN_APPLICATION_SPEED_UNIT),
-    .bMaximumSpeedErrorsNumber         =	MEAS_ERRORS_BEFORE_FAULTS,
-    .hMaxReliableMecAccelUnitP         =	65535,
-    .hMeasurementFrequency             =	TF_REGULATION_RATE_SCALED,
+    .bElToMecRatio                     =    POLE_PAIR_NUM,
+    .hMaxReliableMecSpeedUnit          =    (uint16_t)(1.15*MAX_APPLICATION_SPEED_UNIT),
+    .hMinReliableMecSpeedUnit          =    (uint16_t)(MIN_APPLICATION_SPEED_UNIT),
+    .bMaximumSpeedErrorsNumber         =    MEAS_ERRORS_BEFORE_FAULTS,
+    .hMaxReliableMecAccelUnitP         =    65535,
+    .hMeasurementFrequency             =    TF_REGULATION_RATE_SCALED,
     .DPPConvFactor                     =  DPP_CONV_FACTOR,
   },
   .SensorPlacement     = HALL_SENSORS_PLACEMENT,
@@ -264,7 +264,7 @@ RampExtMngr_Handle_t RampExtMngrHFParamsM1 =
 CircleLimitation_Handle_t CircleLimitationM1 =
 {
   .MaxModule          = MAX_MODULE,
-  .MaxVd          	  = (uint16_t)(MAX_MODULE * 950 / 1000),
+  .MaxVd              = (uint16_t)(MAX_MODULE * 950 / 1000),
   .Circle_limit_table = MMITABLE,
   .Start_index        = START_INDEX,
 };
