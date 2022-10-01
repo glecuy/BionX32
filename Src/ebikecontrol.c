@@ -41,7 +41,7 @@ void motorServiceInit(void){
 
 void motorService(void){
     uint8_t AssistLevel = displayGetAssistLevel();
-    uint16_t voltage;
+    uint16_t voltage, temp;
 
 
     if ( MC_AssistLevel != AssistLevel ){
@@ -56,7 +56,8 @@ void motorService(void){
     }
 
     voltage = VBS_GetAvBusVoltage_V(pMCT[M1]->pBusVoltageSensor);
-    printf("Motor voltage = %d\r\n", voltage );
+    temp = NTC_GetAvTemp_C(pMCT[M1]->pTemperatureSensor);
+    printf("Motor voltage = %d - T=%d\r\n", voltage, temp );
 
 
     //displayMotorState();

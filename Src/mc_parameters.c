@@ -48,27 +48,27 @@ const R1_VL1Params_t R1_VL1ParamsSD =
   /* Current reading A/D Conversions initialization --------------------------*/
   .ADCx_Inj = ADC1,
 
-  .hIChannel                  =	MC_ADC_CHANNEL_0,
+  .hIChannel                  = MC_ADC_CHANNEL_0,
 
 /* PWM generation parameters --------------------------------------------------*/
-  .hDeadTime                  =	DEAD_TIME_COUNTS,
+  .hDeadTime                  = DEAD_TIME_COUNTS,
 
-  .RepetitionCounter         =	REP_COUNTER,
+  .RepetitionCounter         =  REP_COUNTER,
 
-  .hTafter                    =	TAFTER,
+  .hTafter                    = TAFTER,
 
-  .hTbefore                   =	TBEFORE,
-  .hTMin                      =	 TMIN,
+  .hTbefore                   = TBEFORE,
+  .hTMin                      =  TMIN,
 
-  .hHTMin                     =	HTMIN,
+  .hHTMin                     = HTMIN,
 
-  .hTSample                   =	SAMPLING_TIME,
+  .hTSample                   = SAMPLING_TIME,
 
-  .hMaxTrTs                   =	MAX_TRTS,
+  .hMaxTrTs                   = MAX_TRTS,
 
 /* PWM Driving signals initialization ----------------------------------------*/
 
-  .LowSideOutputs         =	(LowSideOutputsFunction_t)LOW_SIDE_SIGNALS_ENABLING,
+  .LowSideOutputs         = (LowSideOutputsFunction_t)LOW_SIDE_SIGNALS_ENABLING,
 
 /* PWM Driving signals initialization ----------------------------------------*/
   .EmergencyStop                = (FunctionalState) ENABLE,
