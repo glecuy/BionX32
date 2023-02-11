@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name "ControllerLibrary")(type "KiCad")(uri "${KIPRJMOD}/ControllerLibrary.kicad_sym")(options "")(descr ""))
+  (lib (name "bluepill_breakouts")(type "Legacy")(uri "${KIPRJMOD}/bluepill_breakouts.lib")(options "")(descr ""))
+  (lib (name "Controller")(type "KiCad")(uri "${KIPRJMOD}/Controller.kicad_sym")(options "")(descr ""))
+)

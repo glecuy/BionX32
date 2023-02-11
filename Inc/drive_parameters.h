@@ -67,18 +67,18 @@
 #define REGULATION_EXECUTION_RATE     1    /*!< FOC execution rate in
                                                            number of PWM cycles */
 /* Gains values for torque and flux control loops */
-#define PID_TORQUE_KP_DEFAULT         3134
-#define PID_TORQUE_KI_DEFAULT         914
+#define PID_TORQUE_KP_DEFAULT         2069
+#define PID_TORQUE_KI_DEFAULT         1034
 #define PID_TORQUE_KD_DEFAULT         100
-#define PID_FLUX_KP_DEFAULT           3134
-#define PID_FLUX_KI_DEFAULT           914
+#define PID_FLUX_KP_DEFAULT           2069
+#define PID_FLUX_KI_DEFAULT           1034
 #define PID_FLUX_KD_DEFAULT           100
 
 /* Torque/Flux control loop gains dividers*/
-#define TF_KPDIV                      2048
+#define TF_KPDIV                      512
 #define TF_KIDIV                      16384
 #define TF_KDDIV                      8192
-#define TF_KPDIV_LOG                  LOG2(2048)
+#define TF_KPDIV_LOG                  LOG2(512)
 #define TF_KIDIV_LOG                  LOG2(16384)
 #define TF_KDDIV_LOG                  LOG2(8192)
 #define TFDIFFERENTIAL_TERM_ENABLING  DISABLE
@@ -103,14 +103,14 @@
 /* USER CODE END PID_SPEED_INTEGRAL_INIT_DIV */
 
 #define SPD_DIFFERENTIAL_TERM_ENABLING DISABLE
-#define IQMAX                          16443
+#define IQMAX                          6227
 
 /* Default settings */
 #define DEFAULT_CONTROL_MODE           STC_TORQUE_MODE /*!< STC_TORQUE_MODE or
                                                         STC_SPEED_MODE */
 #define DEFAULT_TARGET_SPEED_RPM      1500
 #define DEFAULT_TARGET_SPEED_UNIT      (DEFAULT_TARGET_SPEED_RPM*SPEED_UNIT/_RPM)
-#define DEFAULT_TORQUE_COMPONENT       719
+#define DEFAULT_TORQUE_COMPONENT       272
 #define DEFAULT_FLUX_COMPONENT         0
 
 /**************************    FIRMWARE PROTECTIONS SECTION   *****************/

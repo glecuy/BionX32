@@ -103,9 +103,15 @@ void Error_Handler(void);
 #define UserLED_Pin GPIO_PIN_13
 #define UserLED_GPIO_Port GPIOC
 
+// PAS and Brake inputs
+#define PAS_Pin    GPIO_PIN_14
+#define Brake_Pin  GPIO_PIN_15
+#define PAS_Brake_Port GPIOC
+
 /* USER CODE BEGIN Private defines */
+// Blue LED Module
 #define UserLED_toggle() HAL_GPIO_TogglePin (UserLED_GPIO_Port, UserLED_Pin)
-#define UserLED_on() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_SET)
+#define UserLED_on() HAL_GPIO_WritePin  (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_SET)
 #define UserLED_off() HAL_GPIO_WritePin (UserLED_GPIO_Port, UserLED_Pin, GPIO_PIN_RESET)
 
 // Probes
@@ -120,6 +126,13 @@ void Error_Handler(void);
 #define UserProbe6_H() HAL_GPIO_WritePin (UserProbes_Port, UserProbe6_Pin, GPIO_PIN_SET)
 #define UserProbe6_L() HAL_GPIO_WritePin (UserProbes_Port, UserProbe6_Pin, GPIO_PIN_RESET)
 
+// PASdetection parameters
+#define PAS_MAX_TIME_INTERVAL 300  // Ms
+#define PAS_MAX_TIME_OUT      1000  // Ms reset
+#define PAS_MIN_ON_VALUE      12
+#define PAS_MAX_ON_VALUE      (PAS_MIN_ON_VALUE+4)
+
+extern volatile uint32_t systick_cnt;
 
 /* USER CODE END Private defines */
 

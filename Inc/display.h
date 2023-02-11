@@ -19,7 +19,7 @@ void displayInit(void);
 
 void displayService(void);
 
-uint8_t displaySetWheelTime( uint16_t tMs );
+uint8_t displaySetWheelTime( int16_t rpm10 );
 
 uint8_t displaySetError( DISPLAY_ERR_t err );
 

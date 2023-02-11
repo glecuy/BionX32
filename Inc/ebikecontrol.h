@@ -16,8 +16,6 @@ void motorServiceInit(void);
 
 void motorService(void);
 
-void displayMotorState(void);
-
 
 #endif /*__EBIKECONTROL_H*/
 

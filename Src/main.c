@@ -54,7 +54,7 @@ DMA_HandleTypeDef hdma_adc1;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
-TIM_HandleTypeDef htim4;
+//TIM_HandleTypeDef htim4;
 DMA_HandleTypeDef hdma_tim1_up;
 DMA_HandleTypeDef hdma_tim1_ch4_trig_com;
 
@@ -73,7 +73,7 @@ static void MX_ADC1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_TIM4_Init(void);
+//static void MX_TIM4_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_NVIC_Init(void);
@@ -126,10 +126,9 @@ int main(void)
     MX_TIM1_Init();
     MX_TIM2_Init();
     MX_TIM3_Init();
-    MX_TIM4_Init();
+    //MX_TIM4_Init();
     MX_USART2_UART_Init();
     MX_USART3_UART_Init();
-
     MX_MotorControl_Init();
 
     /* Initialize interrupts */
@@ -147,6 +146,8 @@ int main(void)
 
     motorServiceInit();
 
+
+    UserLED_on();
     while (1)
     {
         /* USER CODE END WHILE */
@@ -163,7 +164,7 @@ int main(void)
             // High level Motor control
             motorService();
 
-            UserLED_toggle();
+            //UserLED_toggle();
         }
 
 
@@ -529,64 +530,8 @@ static void MX_TIM3_Init(void)
 
 }
 
-/**
-  * @brief TIM4 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM4_Init(void)
-{
 
-  /* USER CODE BEGIN TIM4_Init 0 */
 
-  /* USER CODE END TIM4_Init 0 */
-
-  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
-
-  /* USER CODE BEGIN TIM4_Init 1 */
-
-  /* USER CODE END TIM4_Init 1 */
-  htim4.Instance = TIM4;
-  htim4.Init.Prescaler = ((TIM_CLOCK_DIVIDER) - 1);
-  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = ((PWM_PERIOD_CYCLES) - 1);
-  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
-  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_TRIGGER;
-  sSlaveConfig.InputTrigger = TIM_TS_ITR1;
-  if (HAL_TIM_SlaveConfigSynchro(&htim4, &sSlaveConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC3REF;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigOC.OCMode = TIM_OCMODE_PWM2;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM4_Init 2 */
-
-  /* USER CODE END TIM4_Init 2 */
-
-}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
     if (huart->Instance == USART3){
@@ -603,6 +548,41 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     if ( huart == &huart3 ){
         displayEndOfTx();
     }
+}
+
+
+/* PAS detector :
+ *  12 Magnets, One Hall sensor
+ *  Min rate 12 for 2.0 Sec (166 ms)
+ *
+ *********************************************************************/
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+    if ( GPIO_Pin == PAS_Pin ){
+        extern volatile uint8_t MC_Pas_IT_Counter;
+        extern volatile uint32_t MC_Pas_Tick;
+
+        // Time out
+        if ( systick_cnt > (MC_Pas_Tick + PAS_MAX_TIME_OUT*2) ) {
+            MC_Pas_IT_Counter=0;
+        }
+        // If greater than 166 ms
+        if ( systick_cnt > (MC_Pas_Tick + PAS_MAX_TIME_INTERVAL*2) ) {
+            if ( MC_Pas_IT_Counter > 0 ){
+                MC_Pas_IT_Counter--;
+            }
+        }
+        else{
+            if ( MC_Pas_IT_Counter < PAS_MAX_ON_VALUE ){
+                MC_Pas_IT_Counter++;
+            }
+        }
+        MC_Pas_Tick = systick_cnt;
+        //UserLED_toggle();
+    } else {
+      __NOP();
+    }
+
+    UNUSED(GPIO_Pin);
 }
 
 
@@ -645,7 +625,7 @@ static void MX_USART2_UART_Init(void)
   * @brief USART3 Initialization Function
   * @param None
   * @retval None
-  * UART3is used to communicate with Display @9600
+  * UART3 is used to communicate with Display @9600
   */
 static void MX_USART3_UART_Init(void)
 {
@@ -697,20 +677,37 @@ static void MX_GPIO_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+    /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
-    /* GPIO LED */
+    /* GPIO LED PAS BRAKE */
     __HAL_RCC_GPIOC_CLK_ENABLE();
 
-     /*Configure GPIO pin : UserLED_Pin */
+     /* Configure GPIO pin : UserLED_Pin */
     GPIO_InitStruct.Pin = UserLED_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(UserLED_GPIO_Port, &GPIO_InitStruct);
+
+    // Brake input
+    GPIO_InitStruct.Pin = Brake_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(PAS_Brake_Port, &GPIO_InitStruct);
+
+    // PAS input
+    GPIO_InitStruct.Pin = PAS_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(PAS_Brake_Port, &GPIO_InitStruct);
+
+    /* PAS interrupt */
+    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
     /* Probe #5 #6  */
     GPIO_InitStruct.Pin = UserProbe5_Pin|UserProbe6_Pin;

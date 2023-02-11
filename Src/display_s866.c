@@ -82,7 +82,8 @@ typedef struct
 DISPLAY_CONTEXT_t gContext;
 
 void displayInit(void) {
-    gContext.Tx.Wheeltime = 201; // mSec (25 KmH)
+    //gContext.Tx.Wheeltime = 201; // mSec (25 KmH)
+    gContext.Tx.Wheeltime = 2010; // mSec
     gContext.Tx.Error = 0x00;
 
     displayInitRxTx();
@@ -131,6 +132,7 @@ static void parseRxFrame(void){
 static void sendStatus( void ){
     uint8_t checkSum = 0x0;
 
+    //printf("Wheeltime = %d\r\n", gContext.Tx.Wheeltime);
     gContext.TxBuff[0]  = 0x02;
     gContext.TxBuff[1]  = 0x0E;
     gContext.TxBuff[2]  = 0x01;
@@ -236,19 +238,28 @@ uint8_t displayGetAssistLevel(void){
 }
 
 
+// Check SPEED_UNIT is _01HZ
+#if (SPEED_UNIT != _01HZ)
+#error
+#endif
+//
+//  38165,2869976986 / rpm
+// 381652 / 10rpm
+uint8_t displaySetWheelTime( int16_t rpm10 ){
+    if ( rpm10 < 90 )    // 1.x Kmh
+        rpm10 = 90;
+    if ( rpm10 > 4557 )  // 60 Kmh
+        rpm10 = 4557;
 
-uint8_t displaySetWheelTime( uint16_t tMs ){
-    // Clamp speed (~ 72 KmH)
-    if ( tMs < 70 )
-        tMs = 70;
-    gContext.Tx.Wheeltime = tMs;
+    gContext.Tx.Wheeltime = (uint16_t)(382795L / (int32_t)rpm10);
+    //gContext.Tx.Wheeltime = 200;
     return 0;
 }
 
 uint8_t displaySetError( DISPLAY_ERR_t err ){
     gContext.Tx.Error = 0;
     if ( err == DISPLAY_MOTOR_ERROR ){
-        gContext.Tx.Error = DISPLAY_ERR_7;  // Todo
+        gContext.Tx.Error = DISPLAY_ERR_7;  // TODO
     }
     return gContext.Tx.Error;
 }
