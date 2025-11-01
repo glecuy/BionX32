@@ -31,4 +31,6 @@ S866 display
 ## Credits  & Resources
 STM32CubeIDE
 
-STM32 MC SDK (motor control software development kit)
+STM32 MC SDK (motor control software development kit) : Gived up (Did not work for me)
+
+
