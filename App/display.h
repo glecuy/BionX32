@@ -18,6 +18,7 @@ typedef enum{
 void displayInit(void);
 
 void displayService(void);
+void displayUpdate(void);
 
 uint8_t displaySetWheelTime( int16_t rpm10 );
 

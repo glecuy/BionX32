@@ -15,6 +15,7 @@
 // Includes
 #include <stdio.h>
 
+#include "motorControl.h"
 #include "main.h"
 #include "display.h"
 
@@ -110,7 +111,7 @@ static void parseRxFrame(void){
 
     if ( gContext.Rx.AssistLevel != level ){
         gContext.Rx.AssistLevel = level;
-        printf("AssistLevel = %d\r\n", gContext.Rx.AssistLevel);
+        SetAssistLevel( (level*100)/15 );
     }
 
 
@@ -193,18 +194,9 @@ void displayEndOfTx(void){
 }
 
 void displayService(void){
-    // Send some data from controller to display
-    sendStatus();
-
     //printf("gContext.RxIndex = %u\r\n", gContext.RxIndex );
 
-    if ( gContext.RxIndex > 0)
-        Probe01_on();
-    else
-        Probe01_off();
-
     if ( gContext.RxIndex >= DISPLAY_RX_FRAME_SIZE ){
-        Probe01_on();
         // RxBuff[0] may be overwritten, RxBuff[0:1] already checked
         uint8_t checkSum = 0x01 ^ 0x14;
         // Compute checkSum
@@ -225,11 +217,12 @@ void displayService(void){
     if ( gContext.RxIndex == 0 ){
         HAL_UART_Receive_IT( &huart3, gContext.RxBuff, 1 );
     }
+}
 
-    if ( gContext.RxIndex > 0)
-        Probe01_on();
-    else
-        Probe01_off();
+
+void displayUpdate(void){
+    // Send some data from controller to display
+    sendStatus();
 }
 
 

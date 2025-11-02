@@ -269,9 +269,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 
 void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    BlueLED_on();
+    //BlueLED_on();
     PhaseCurrent = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);  // Read The Injected Channel Result
-    BlueLED_off();
+    //BlueLED_off();
 }
 
 const char * str_BusVoltage( uint32_t voltage){
@@ -313,6 +313,11 @@ void eBikeMainLoop(void){
         }
         if ( tick > (prev100Tick + 1000) ){
             prev100Tick = tick;
+            if ( wheelticks == 65535 ){
+                HAL_TIM_IC_CaptureCallback(NULL);
+            }
+
+            displayUpdate();
 
             UART_printf( "HallState = %u WheelSpeed = %u (%u)-%u\r\n", HallState, WHEEL_SPEED_KPH(wheelticks), wheelticks, HallError);
             // Bus voltage milliVolts
@@ -324,7 +329,7 @@ void eBikeMainLoop(void){
                 PhaseCurrent     = 0;
 
             //UART_printf( "PhaseCurrent=%u\r\n", PhaseCurrent );
-            UART_printf( "BusVoltage=%s, PhaseCurrent=%u, MotorTemperature=%u, BoardTemperature=%u\r\n", str_BusVoltage(BusVoltage), PhaseCurrent, MotorTemperature, BoardTemperature);
+            //UART_printf( "BusVoltage=%s, PhaseCurrent=%u, MotorTemperature=%u, BoardTemperature=%u\r\n", str_BusVoltage(BusVoltage), PhaseCurrent, MotorTemperature, BoardTemperature);
         }
     }
 

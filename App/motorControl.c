@@ -6,6 +6,14 @@
 
 #include "UART_Printf.h"
 
+static uint16_t AssistLevel;
+
+// Enable or not printf traces
+void UART_printf(const char *fmt, ...);
+#define printf UART_printf
+//#define printf (void)
+
+
 #ifdef TEST_SINE
 #define NUM_POINTS 66
 #define SIN_TABLE_REF 512
@@ -41,13 +49,27 @@ void UpdateTestSinePwm(void){
 
 
 /*
+ * Set level of assistance.
+ * Scale is 0 to 100
+ *****************************************/
+uint16_t SetAssistLevel( uint16_t level ){
+    if ( level <= 100 )
+        AssistLevel = level;
+    else
+        AssistLevel = 0;
+    printf("AssistLevel = %d %%\r\n", AssistLevel);
+    return AssistLevel;
+}
+
+
+/*
  * www.Pittman-Motors.com
  */
 void SetPhasesPwm(int16_t step){
 
     int16_t MaxAmplitute = TIM1->ARR;
     int16_t Offset = MaxAmplitute/2;
-    int16_t Amplitute = MaxAmplitute/5;
+    int16_t Amplitute = ((MaxAmplitute * AssistLevel)/100)/2;
 
 #if 1  // TODO
     switch( step ){

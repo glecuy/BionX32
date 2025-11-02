@@ -21,4 +21,6 @@ void UpdateTest6StepsPwm(void);
 
 void SetPhasesPwm(int16_t step);
 
+uint16_t SetAssistLevel( uint16_t level );
+
 #endif // __MOTOR_CONTROL_H
