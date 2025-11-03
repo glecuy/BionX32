@@ -13,6 +13,8 @@
 
 void MotorDriveInit(void);
 
+void MotorDriveService(void);
+
 void UpdateTestSinePwm(void);
 void UpdateTestSquarePwm(void);
 void UpdateTestTrapezoidalPwm(void);

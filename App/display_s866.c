@@ -114,10 +114,6 @@ static void parseRxFrame(void){
         SetAssistLevel( (level*100)/15 );
     }
 
-
-    //DEBUG_pin_toggle();
-
-
    // for (int i=0 ; i<DISPLAY_RX_FRAME_SIZE ; i++ ){
    //     printf("%02X ", *ptr++ );
    // }

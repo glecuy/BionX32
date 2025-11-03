@@ -115,17 +115,10 @@ void eBikeInit(void){
     LL_GPIO_LockPin(Hall_H1_GPIO_Port, Hall_H1_Pin);
     LL_GPIO_LockPin(Hall_H2_GPIO_Port, Hall_H2_Pin);
 
-    // Disable PWMs
-    //LL_TIM_EnableAllOutputs(TIM1);
-//    LL_TIM_DisableAllOutputs(TIM1);
 
-    //Tim1DisableChannel(TIM_CHANNEL_1);
-    //Tim1EnableChannel(TIM_CHANNEL_1);
-
+    MotorDriveInit();
 
     displayInit();
-
-
 }
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
@@ -310,6 +303,9 @@ void eBikeMainLoop(void){
 
             // Display console In/Out
             displayService();
+
+            // Manage Drive parameters
+            MotorDriveService();
         }
         if ( tick > (prev100Tick + 1000) ){
             prev100Tick = tick;

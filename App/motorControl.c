@@ -1,17 +1,40 @@
 
 #include "main.h"
+#include "eBikeMain.h"
 #include "motorControl.h"
 
 #include "stm32f1xx_hal_tim.h"
 
 #include "UART_Printf.h"
 
+static uint16_t CurrentAssistLevel;
 static uint16_t AssistLevel;
 
 // Enable or not printf traces
 void UART_printf(const char *fmt, ...);
 #define printf UART_printf
 //#define printf (void)
+
+
+void MotorDriveInit(void){
+    CurrentAssistLevel = 0;
+    AssistLevel = 0;
+}
+
+void MotorDriveService(void){
+    if ( AssistLevel > CurrentAssistLevel ){
+        CurrentAssistLevel++;
+    }
+    if ( AssistLevel < CurrentAssistLevel ){
+        CurrentAssistLevel--;
+    }
+    if ( CurrentAssistLevel == 0 ){
+        DisablePWMs();
+    }
+    else{
+        EnablePWMs();
+    }
+}
 
 
 #ifdef TEST_SINE
@@ -41,7 +64,6 @@ void UpdateTestSinePwm(void){
     TIM1->CCR2 = (uint16_t)(Offset+(Amplitute * table_sin[(counter + TIME_OFFSET_B) % NUM_POINTS])/SIN_TABLE_REF);
     TIM1->CCR3 = (uint16_t)(Offset+(Amplitute * table_sin[(counter + TIME_OFFSET_C) % NUM_POINTS])/SIN_TABLE_REF);
 
-
     counter++;
 }
 
@@ -53,10 +75,12 @@ void UpdateTestSinePwm(void){
  * Scale is 0 to 100
  *****************************************/
 uint16_t SetAssistLevel( uint16_t level ){
+    // TODO fine tune scale
     if ( level <= 100 )
         AssistLevel = level;
     else
         AssistLevel = 0;
+
     printf("AssistLevel = %d %%\r\n", AssistLevel);
     return AssistLevel;
 }
@@ -69,7 +93,7 @@ void SetPhasesPwm(int16_t step){
 
     int16_t MaxAmplitute = TIM1->ARR;
     int16_t Offset = MaxAmplitute/2;
-    int16_t Amplitute = ((MaxAmplitute * AssistLevel)/100)/2;
+    int16_t Amplitute = ((MaxAmplitute * CurrentAssistLevel)/100)/2;
 
 #if 1  // TODO
     switch( step ){

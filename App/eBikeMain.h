@@ -6,6 +6,10 @@
 void eBikeInit(void);
 void eBikeMainLoop(void);
 
+#define EnablePWMs()   LL_TIM_EnableAllOutputs(TIM1)
+#define DisablePWMs()  LL_TIM_DisableAllOutputs(TIM1)
+
+
 #define WHEEL_CIRCUMFERENCE 2200UL  // mm
 
 #define ADC_REFERENCE_VOLTAGE  3300     // 3.3V
