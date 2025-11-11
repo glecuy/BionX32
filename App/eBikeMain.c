@@ -45,8 +45,6 @@ static uint32_t PhaseCurrent;
 
 
 static uint16_t HallState;
-static int16_t SinePos;
-
 
 static inline void disable_pwm(void) {
   CLEAR_BIT(TIM1->BDTR, TIM_BDTR_MOE);
@@ -126,8 +124,6 @@ void eBikeInit(void){
     LL_GPIO_LockPin(Hall_H1_GPIO_Port, Hall_H1_Pin);
     LL_GPIO_LockPin(Hall_H2_GPIO_Port, Hall_H2_Pin);
 
-    SinePos = -1;
-
     MotorDriveInit();
 
     displayInit();
@@ -200,19 +196,6 @@ uint16_t ValidateHallState( uint16_t state ){
 }
 
 int16_t hallTable[] = {0xFF, 1, 5, 6, 3, 2, 4, 0xFF};
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
-{
-    if ( htim->Instance == TIM4 ){
-        if ( isSpaceVectorMode() ){
-            int16_t sector = hallTable[HallState];
-            Probe01_on();
-            SetPhasesSvPwm(sector, SinePos);
-            Probe01_off();
-            SinePos++;
-        }
-    }
-}
-
 
 uint16_t ReadHallState( void ){
     uint32_t hall1, hall2, hall3;
@@ -238,7 +221,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
     //BlueLED_on();
 
     //BlueLED_toggle();
-
+    // TODO Improve Hardware noise filtering !
     HallState0 = ReadHallState();
 
     __ASM volatile ("NOP");
@@ -247,9 +230,6 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
     __ASM volatile ("NOP");
 
     HallState = ReadHallState();
-
-    // Reset position in sector (Sinewave)
-    SinePos = 0;
 
     HallCycles++;
 
@@ -261,21 +241,15 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
     // Store Tim3 ticks value since previous change
     HallTicks = TIM3->CCR1;
 
-    // Change PSC on TIM4 to adjust frequency (16x)
-    // Changing ARR is not stable for obscur reason !   TODO
-    TIM4->PSC = HallTicks/16;
-    //TIM4->PSC = 20000/16;
-
-    //TIM4->ARR = HallTicks/16;
-    //TIM4->EGR = ((uint16_t)0x0001); //TIM_PSCReloadMode_Immediate;
-
     if ( HallState == 1 ){
         BlueLED_toggle();
     }
 
 
     //HallState = ValidateHallState( HallState );
-
+    int16_t sector = hallTable[HallState];
+    SetPhasesPwm(sector);
+#if 0
     if ( ! isSpaceVectorMode() ){
         switch (HallState){
             case 1:
@@ -312,6 +286,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
                 break;
         }
     }
+#endif
+
     PreviousHallState = HallState;
     PreviousHallTicks = HallTicks;
 
