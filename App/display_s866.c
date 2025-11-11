@@ -161,13 +161,6 @@ void displayInitRxTx(void){
 }
 
 void displayEndOfRx(){
-//    UserProbe6_toggle();
-
-    if ( gContext.RxIndex > 0)
-        Probe01_on();
-    else
-        Probe01_off();
-
     if ( gContext.RxBuff[0] != 0x01 ){
         gContext.RxIndex = 0;
     }
@@ -240,7 +233,7 @@ uint8_t displaySetWheelTime( int16_t rpm10 ){
     if ( rpm10 > 4557 )  // 60 Kmh
         rpm10 = 4557;
 
-    gContext.Tx.Wheeltime = (uint16_t)(382795L / (int32_t)rpm10);
+    gContext.Tx.Wheeltime = (uint16_t)(571000L / (int32_t)rpm10);
     //gContext.Tx.Wheeltime = 200;
     return 0;
 }

@@ -5,6 +5,8 @@
  ***********************************************************************/
 
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #include "main.h"
 #include "stm32f1xx_ll_gpio.h"
@@ -30,15 +32,20 @@ uint32_t ADC_ResultBuffer[4];
 
 
 // Motor
-static uint32_t HallState, PreviousHallState;
+static uint16_t PreviousHallState;
 static uint32_t HallError;
 static uint16_t HallTicks;
+static uint32_t HallCycles;
 static uint16_t PreviousHallTicks;
 
 //static uint16_t SpaceSectorCnt;
 
 static uint32_t BusVoltage, BoardTemperature, MotorTemperature;
 static uint32_t PhaseCurrent;
+
+
+static uint16_t HallState;
+static int16_t SinePos;
 
 
 static inline void disable_pwm(void) {
@@ -49,6 +56,10 @@ static inline void enable_pwm(void) {
   SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);
 }
 
+static inline bool isSpaceVectorMode(void) {
+    return ( HallTicks < 30000 && HallCycles > 100 );
+    //return false;
+}
 
 void eBikeInit(void){
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -115,6 +126,7 @@ void eBikeInit(void){
     LL_GPIO_LockPin(Hall_H1_GPIO_Port, Hall_H1_Pin);
     LL_GPIO_LockPin(Hall_H2_GPIO_Port, Hall_H2_Pin);
 
+    SinePos = -1;
 
     MotorDriveInit();
 
@@ -142,8 +154,6 @@ void HAL_TIM3_Callback(void){
     if ((TIM3->SR & (TIM_FLAG_UPDATE)) == (TIM_FLAG_UPDATE)){
         HallTicks = 65535;
     }
-    //BlueLED_toggle();
-    //__HAL_TIM_SET_AUTORELOAD( &htim4, (HallTicks/32) );
 
 }
 
@@ -185,15 +195,28 @@ uint16_t ValidateHallState( uint16_t state ){
     if ( validated != state ){
         HallError++;
     }
+    //return state;
     return validated;
 }
 
+int16_t hallTable[] = {0xFF, 1, 5, 6, 3, 2, 4, 0xFF};
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+    if ( htim->Instance == TIM4 ){
+        if ( isSpaceVectorMode() ){
+            int16_t sector = hallTable[HallState];
+            Probe01_on();
+            SetPhasesSvPwm(sector, SinePos);
+            Probe01_off();
+            SinePos++;
+        }
+    }
+}
 
-/**
-  * Manages HALL changes
-  */
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
-    uint16_t hall1, hall2, hall3;
+
+uint16_t ReadHallState( void ){
+    uint32_t hall1, hall2, hall3;
+    uint16_t state;
 
     hall3 = LL_GPIO_ReadInputPort( Hall_H2_GPIO_Port );
     hall3 >>= 5;
@@ -201,51 +224,98 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
     hall3 &= 0x04;
     hall2 &= 0x02;
     hall1  = LL_GPIO_ReadInputPort( Hall_H3_GPIO_Port ) & 0x01;
-    HallState = hall3 | hall2 | hall1;
+    state = (uint16_t)(hall3 | hall2 | hall1);
+
+    return state;
+}
+
+/**
+  * Manages HALL changes
+  */
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
+    uint16_t HallState0;
+
+    //BlueLED_on();
 
     //BlueLED_toggle();
+
+    HallState0 = ReadHallState();
+
+    __ASM volatile ("NOP");
+    __ASM volatile ("NOP");
+    __ASM volatile ("NOP");
+    __ASM volatile ("NOP");
+
+    HallState = ReadHallState();
+
+    // Reset position in sector (Sinewave)
+    SinePos = 0;
+
+    HallCycles++;
+
+    if  ( HallState0 != HallState ){
+        HallError++;
+    }
+
 
     // Store Tim3 ticks value since previous change
     HallTicks = TIM3->CCR1;
 
-    HallState = ValidateHallState( HallState );
+    // Change PSC on TIM4 to adjust frequency (16x)
+    // Changing ARR is not stable for obscur reason !   TODO
+    TIM4->PSC = HallTicks/16;
+    //TIM4->PSC = 20000/16;
 
-    switch (HallState){
-        case 1:
-            Probe01_on();
-            SetPhasesPwm(STATE_PM0);
-            break;
+    //TIM4->ARR = HallTicks/16;
+    //TIM4->EGR = ((uint16_t)0x0001); //TIM_PSCReloadMode_Immediate;
 
-        case 3:
-            Probe01_off();
-            SetPhasesPwm(STATE_0MP);
-            break;
+    if ( HallState == 1 ){
+        BlueLED_toggle();
+    }
 
-        case 2:
-            Probe01_off();
-            SetPhasesPwm(STATE_M0P);
-            break;
 
-        case 6:
-            Probe01_off();
-            SetPhasesPwm(STATE_MP0);
-            break;
+    //HallState = ValidateHallState( HallState );
 
-        case 4:
-            Probe01_off();
-            SetPhasesPwm(STATE_0PM);
-            break;
+    if ( ! isSpaceVectorMode() ){
+        switch (HallState){
+            case 1:
+                //Probe01_on();
+                SetPhasesPwm(STATE_PM0);
+                break;
 
-        case 5:
-            Probe01_off();
-            SetPhasesPwm(STATE_P0M);
-            break;
-        default:
-            HallError++;
-            break;
+            case 3:
+                //Probe01_off();
+                SetPhasesPwm(STATE_0MP);
+                break;
+
+            case 2:
+                //Probe01_off();
+                SetPhasesPwm(STATE_M0P);
+                break;
+
+            case 6:
+                //Probe01_off();
+                SetPhasesPwm(STATE_MP0);
+                break;
+
+            case 4:
+                //Probe01_off();
+                SetPhasesPwm(STATE_0PM);
+                break;
+
+            case 5:
+                //Probe01_off();
+                SetPhasesPwm(STATE_P0M);
+                break;
+            default:
+                HallError++;
+                break;
+        }
     }
     PreviousHallState = HallState;
     PreviousHallTicks = HallTicks;
+
+    //BlueLED_off();
 }
 
 
@@ -289,8 +359,14 @@ void eBikeMainLoop(void){
     // Inject ADC1 measurement to get peak value of the current.
     TIM1->CCR4 = 1500;
 
+    // Start TIM4
+    HAL_TIM_Base_Start_IT(&htim4);
+
     //UART_printf( "ARR = %u\r\n", TIM1->ARR );
     UART_printf( "CR2 = %04X\r\n", TIM1->CR2 );
+
+     TIM4->ARR = 300;
+
     while(1){
         tick = HAL_GetTick();
 
@@ -299,6 +375,9 @@ void eBikeMainLoop(void){
             HAL_NVIC_DisableIRQ(TIM3_IRQn);
             wheelticks = HallTicks;
             HAL_NVIC_EnableIRQ(TIM3_IRQn);
+
+            ///__HAL_TIM_SET_AUTORELOAD( &htim4, (wheelticks/16) );
+
             displaySetWheelTime( WHEEL_SPEED_RPMx10(wheelticks) );
 
             // Display console In/Out
@@ -311,11 +390,12 @@ void eBikeMainLoop(void){
             prev100Tick = tick;
             if ( wheelticks == 65535 ){
                 HAL_TIM_IC_CaptureCallback(NULL);
+                HallCycles = 0;
             }
 
             displayUpdate();
 
-            UART_printf( "HallState = %u WheelSpeed = %u (%u)-%u\r\n", HallState, WHEEL_SPEED_KPH(wheelticks), wheelticks, HallError);
+            UART_printf( "HallState = %u WheelSpeed = %u (%u)-%u\r\n", PreviousHallState, WHEEL_SPEED_KPH(wheelticks), wheelticks, HallCycles);
             // Bus voltage milliVolts
             BusVoltage       = (BusVoltage*((ADC_REFERENCE_VOLTAGE*10*1000)/4096))/VBUS_PARTITIONING_FACTORx10000;
 
